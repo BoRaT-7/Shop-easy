@@ -1,7 +1,7 @@
 
 @include('layouts.header')
 
-@include('layouts.home')
+@include('home')
 
 <main class="min-h-[50vh]">
     @yield('content')

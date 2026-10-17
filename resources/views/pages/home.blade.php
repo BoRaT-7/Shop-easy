@@ -5,7 +5,10 @@
 
 @section('content')
 
-    <!-- Welcome Section -->
+<!-- Welcome Section -->
+     
+
+
     
 <section
     id="watch-hero"
@@ -131,6 +134,8 @@
         }, 3000);
     })();
 </script>
+
+
 
    <!-- catagory section -->
     
