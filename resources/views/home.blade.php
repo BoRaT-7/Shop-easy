@@ -98,7 +98,7 @@
                 </svg>
             </div>
         </a>
-        <a href="{{route('vendor.register')}}"
+        <a href="{{route('vendor.login')}}"
            class="btn btn-sm sm:btn-md bg-slate-900
                   hover:bg-amber-400 text-white hover:text-slate-900
                   border-slate-900 hover:border-amber-400
