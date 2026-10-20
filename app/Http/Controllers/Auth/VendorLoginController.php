@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\Auth;
+
 use App\Http\Controllers\Controller;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
@@ -9,22 +10,34 @@ class VendorLoginController extends Controller
 {
     public function showLogin()
     {
+        // Already logged in? Go to dashboard.
+        if (session()->has('vendor_id')) {
+            return redirect()->route('vendor.dashboard');
+        }
+
         return view('auth.vendor-login');
     }
 
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
         ]);
 
-        $vendor = Vendor::where('email', $credentials['email'])->first();
+        $vendor = Vendor::where(
+            'email',
+            $credentials['email']
+        )->first();
 
-        if (! $vendor || ! Hash::check(
-            $credentials['password'],
-            $vendor->password
-        )) {
+        // Verify email and password.
+        if (
+            !$vendor ||
+            !Hash::check(
+                $credentials['password'],
+                $vendor->password
+            )
+        ) {
             return back()
                 ->withErrors([
                     'email' => 'Invalid email or password.',
@@ -32,9 +45,10 @@ class VendorLoginController extends Controller
                 ->onlyInput('email');
         }
 
+        // Start a fresh authenticated session.
         $request->session()->regenerate();
 
-        session([
+        $request->session()->put([
             'vendor_id' => $vendor->id,
             'vendor_name' => $vendor->full_name,
         ]);
@@ -42,29 +56,18 @@ class VendorLoginController extends Controller
         return redirect()->route('vendor.dashboard');
     }
 
-    public function dashboard(Request $request)
+    public function dashboard()
     {
-        if (! session()->has('vendor_id')) {
-            return redirect()
-                ->route('vendor.login')
-                ->withErrors([
-                    'email' => 'Please sign in to access your dashboard.',
-                ]);
-        }
-
         return view('vendor.dashboard');
     }
 
     public function logout(Request $request)
     {
-        $request->session()->forget([
-            'vendor_id',
-            'vendor_name',
-        ]);
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('vendor.login');
+        return redirect()
+            ->route('vendor.login')
+            ->with('success', 'You have logged out successfully.');
     }
 }
