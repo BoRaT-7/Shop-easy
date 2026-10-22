@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Users;
+use App\Models\Vendor;
+use App\Models\Category;
 
 class AdminController extends Controller
 {
@@ -13,8 +16,8 @@ class AdminController extends Controller
         return view('admin.dashboard', [
             'totalOrders' => 15,
             'totalCommission' => 10699,
-            'totalUsers' => 50,
-            'totalVendors' => 25,
+            'totalUsers' => User::count(),
+            'totalVendors' => Vendor::count(),
         ]);
     }
 
@@ -23,16 +26,17 @@ class AdminController extends Controller
         return view('admin.addcategory');
     }
 
-    public function storeCategory(Request $request)
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'commission' => ['required', 'numeric', 'min:0', 'max:100'],
-        ]);
+  public function storeCategory(Request $request)
+{
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
+        'commission' => ['required', 'numeric', 'min:0', 'max:100'],
+    ]);
 
-        return back()->with(
-            'success',
-            'Category form submitted successfully!'
-        );
-    }
+    Category::create($validated);
+
+    return redirect()
+        ->route('admin.categories.create')
+        ->with('success', 'Category added successfully!');
+}
 }

@@ -66,3 +66,6 @@ Route::get('/admin/add-category', [AdminController::class, 'addCategory'])
 
 Route::post('/admin/add-category', [AdminController::class, 'storeCategory'])
     ->name('admin.categories.store');
+
+
+//
