@@ -241,11 +241,11 @@
                     <ul class="nav flex-column ms-3">
 
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"
-                               href="{{ url('/admin/categories') }}">
-                                <i class="fas fa-list"></i>
-                                All Categories
-                            </a>
+                          <a href="{{ route('admin.categories.index') }}"
+   class="{{ request()->routeIs('admin.categories.index') ? 'active' : '' }}">
+    <i class="fas fa-list me-2"></i>
+    All Categories
+</a>
                         </li>
 
                         <li class="nav-item">

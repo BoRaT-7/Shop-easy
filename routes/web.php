@@ -10,16 +10,19 @@ use App\Http\Middleware\VendorMiddleware;
 use App\Http\Controllers\Admin\AdminController;
 
 
-
+// Home
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
+
+// Public Category Details
 Route::get('/category/{slug}/{id}', [
     CategoryController::class,
     'detail',
 ])->name('category.detail');
 
-// Registration
+
+// Vendor Registration
 Route::get('/vendor/register', [
     RegisterController::class,
     'create',
@@ -30,7 +33,8 @@ Route::post('/vendor/register', [
     'store',
 ])->name('vendor.register.store');
 
-// Login
+
+// Vendor Login
 Route::get('/vendor/login', [
     VendorLoginController::class,
     'showLogin',
@@ -41,8 +45,10 @@ Route::post('/vendor/login', [
     'login',
 ])->name('vendor.login.submit');
 
-// Protected routes
+
+// Protected Vendor Routes
 Route::middleware(VendorMiddleware::class)->group(function () {
+
     Route::get('/vendor/dashboard', [
         VendorLoginController::class,
         'dashboard',
@@ -52,20 +58,49 @@ Route::middleware(VendorMiddleware::class)->group(function () {
         VendorLoginController::class,
         'logout',
     ])->name('vendor.logout');
+
 });
 
 
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    // Admin Dashboard
+    Route::get('/dashboard', [
+        AdminController::class,
+        'dashboard',
+    ])->name('dashboard');
 
 
- // Admin category routes
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
-    ->name('admin.dashboard');
+    // Category Management
+    Route::get('/categories', [
+        AdminController::class,
+        'categories',
+    ])->name('categories.index');
 
-Route::get('/admin/add-category', [AdminController::class, 'addCategory'])
-    ->name('admin.categories.create');
+    Route::get('/add-category', [
+        AdminController::class,
+        'addCategory',
+    ])->name('categories.create');
 
-Route::post('/admin/add-category', [AdminController::class, 'storeCategory'])
-    ->name('admin.categories.store');
+    Route::post('/add-category', [
+        AdminController::class,
+        'storeCategory',
+    ])->name('categories.store');
 
+    Route::get('/categories/{id}/edit', [
+        AdminController::class,
+        'editCategory',
+    ])->name('categories.edit');
 
-//
+    Route::put('/categories/{id}', [
+        AdminController::class,
+        'updateCategory',
+    ])->name('categories.update');
+
+    Route::delete('/categories/{id}', [
+        AdminController::class,
+        'deleteCategory',
+    ])->name('categories.destroy');
+
+});
